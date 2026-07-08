@@ -18,15 +18,15 @@ RUN sed -i 's/\[\[API_BASE\]\]/${API_BASE}/g' .env-cmdrc
 RUN sed -i 's/\[\[API_AUTH\]\]/${API_AUTH}/g' .env-cmdrc
 RUN sed -i 's/\[\[BASE_REALURL\]\]/${BASE_REALURL}/g' .env-cmdrc
 
-RUN git clone https://github.com/landingon-cloud/api-manager-gui.git && \
-    cd api-manager-gui && \
+RUN git clone git@github.com:smartango/gatearwayman-gui.git && \
+    cd gatearwayman-gui && \
     cp ../.env-cmdrc . && \
     npm install --legacy-peer-deps && \
     npm run build
 
 FROM rust:1.88.0 as rust-build
 
-COPY --from=react-build /app/api-manager-gui/build /assets
+COPY --from=react-build /app/gatearwayman-gui/build /assets
 
 WORKDIR /app
 

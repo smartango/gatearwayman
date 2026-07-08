@@ -15,4 +15,10 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
+      run: docker build . --file Dockerfile --tag gatearwayman:$(shell ./scripts/extract-img-tag.sh)
+    - name: push the docker image in github registry
+      uses: docker/build-push-action@v5
+      with:
+        context: .
+        push: true
+        tags: ghcr.io/gatearwayman/gatearwayman:$(shell ./scripts/extract-img-tag.sh)
