@@ -24,7 +24,7 @@ RUN git clone git@github.com:smartango/gatearwayman-gui.git && \
     npm install --legacy-peer-deps && \
     npm run build
 
-FROM rust:1.88.0 as rust-build
+FROM rust:1.96.1 as rust-build
 
 COPY --from=react-build /app/gatearwayman-gui/build /assets
 
