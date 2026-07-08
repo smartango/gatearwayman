@@ -18,6 +18,8 @@ RUN sed -i 's/\[\[API_BASE\]\]/${API_BASE}/g' .env-cmdrc
 RUN sed -i 's/\[\[API_AUTH\]\]/${API_AUTH}/g' .env-cmdrc
 RUN sed -i 's/\[\[BASE_REALURL\]\]/${BASE_REALURL}/g' .env-cmdrc
 
+RUN mkdir -p ~/.ssh && ssh-keyscan github.com >> ~/.ssh/known_hosts
+
 RUN git clone git@github.com:smartango/gatearwayman-gui.git
 WORKDIR /app/gatearwayman-gui
 RUN cp ../.env-cmdrc
