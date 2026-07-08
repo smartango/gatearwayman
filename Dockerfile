@@ -2,7 +2,7 @@ FROM node:20-alpine AS react-build
 
 WORKDIR /app
 
-RUN apk add --no-cache git
+RUN apk add --no-cache git openssh-client
 
 ADD gui/env-cmdrc /app/.env-cmdrc
 
