@@ -14,11 +14,13 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+    - name: Compute image tag
+      run: echo "IMAGE_TAG=$(./scripts/extract-img-tag.sh)" >> "$GITHUB_ENV"
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag gatearwayman:$(shell ./scripts/extract-img-tag.sh)
+      run: docker build . --file Dockerfile --tag gatearwayman:$IMAGE_TAG
     - name: push the docker image in github registry
       uses: docker/build-push-action@v5
       with:
         context: .
         push: true
-        tags: ghcr.io/gatearwayman/gatearwayman:$(shell ./scripts/extract-img-tag.sh)
+        tags: ghcr.io/gatearwayman/gatearwayman:${{ env.IMAGE_TAG }}
