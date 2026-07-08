@@ -7,10 +7,10 @@ RUN apk add --no-cache git
 ADD gui/env-cmdrc /app/.env-cmdrc
 
 ENV NODE_ENV=production
-ENV PUBLIC_URL
-ENV API_BASE
-ENV API_AUTH
-ENV BASE_REALURL
+ENV PUBLIC_URL=http://localhost:8080
+ENV API_BASE=http://localhost:8081
+ENV API_AUTH=http://localhost:8082
+ENV BASE_REALURL=http://localhost:8080
 # replace [[PUBLIC_URL]] [[API_BASE]] [[API_AUTH]] [[BASE_REALURL]]
 
 RUN sed -i 's/\[\[PUBLIC_URL\]\]/${PUBLIC_URL}/g' .env-cmdrc
