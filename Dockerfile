@@ -1,4 +1,4 @@
-FROM node:12.18.3-alpine3.12 as react-build
+FROM node:20-alpine AS react-build
 
 WORKDIR /app
 
@@ -18,13 +18,13 @@ RUN sed -i 's/\[\[API_BASE\]\]/${API_BASE}/g' .env-cmdrc
 RUN sed -i 's/\[\[API_AUTH\]\]/${API_AUTH}/g' .env-cmdrc
 RUN sed -i 's/\[\[BASE_REALURL\]\]/${BASE_REALURL}/g' .env-cmdrc
 
-RUN git clone git@github.com:smartango/gatearwayman-gui.git && \
-    cd gatearwayman-gui && \
-    cp ../.env-cmdrc . && \
-    npm install --legacy-peer-deps && \
-    npm run build
+RUN git clone git@github.com:smartango/gatearwayman-gui.git
+WORKDIR /app/gatearwayman-gui
+RUN cp ../.env-cmdrc
+RUN npm install --legacy-peer-deps
+RUN npm run build
 
-FROM rust:1.96.1 as rust-build
+FROM rust:1.96.1 AS rust-build
 
 COPY --from=react-build /app/gatearwayman-gui/build /assets
 
