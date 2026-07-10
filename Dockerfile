@@ -24,7 +24,7 @@ RUN --mount=type=ssh git clone git@github.com:smartango/gatearwayman-gui.git
 WORKDIR /app/gatearwayman-gui
 # RUN cp ../.env-cmdrc 
 RUN npm install --legacy-peer-deps
-RUN npm i webpack
+RUN npm i webpack-cli webpack
 RUN npm run build
 
 FROM rust:1.96.1 AS rust-build
