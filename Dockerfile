@@ -22,7 +22,7 @@ RUN mkdir -p ~/.ssh && ssh-keyscan github.com >> ~/.ssh/known_hosts
 
 RUN --mount=type=ssh git clone git@github.com:smartango/gatearwayman-gui.git
 WORKDIR /app/gatearwayman-gui
-RUN cp ../.env-cmdrc
+# RUN cp ../.env-cmdrc 
 RUN npm install --legacy-peer-deps
 RUN npm run build
 
