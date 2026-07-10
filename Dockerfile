@@ -20,7 +20,7 @@ RUN sed -i 's/\[\[BASE_REALURL\]\]/${BASE_REALURL}/g' .env-cmdrc
 
 RUN mkdir -p ~/.ssh && ssh-keyscan github.com >> ~/.ssh/known_hosts
 
-RUN git clone git@github.com:smartango/gatearwayman-gui.git
+RUN --mount=type=sshgit clone git@github.com:smartango/gatearwayman-gui.git
 WORKDIR /app/gatearwayman-gui
 RUN cp ../.env-cmdrc
 RUN npm install --legacy-peer-deps
