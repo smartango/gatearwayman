@@ -29,4 +29,5 @@ jobs:
       with:
         context: .
         push: true
+        ssh: default
         tags: ghcr.io/gatearwayman/gatearwayman:${{ env.IMAGE_TAG }}
