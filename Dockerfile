@@ -23,9 +23,12 @@ RUN mkdir -p ~/.ssh && ssh-keyscan github.com >> ~/.ssh/known_hosts
 RUN --mount=type=ssh git clone git@github.com:smartango/gatearwayman-gui.git
 WORKDIR /app/gatearwayman-gui
 # RUN cp ../.env-cmdrc 
-RUN npm install --legacy-peer-deps
-RUN npm i webpack-cli webpack
+RUN npm install --legacy-peer-deps -D
+RUN pwd
+RUN ls -la .
 RUN npm run build
+RUN ls -la .
+RUN pwd
 
 FROM rust:1.96.1 AS rust-build
 
