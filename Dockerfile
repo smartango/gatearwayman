@@ -1,38 +1,13 @@
-FROM node:25-alpine AS react-build
-
-WORKDIR /app
-
-RUN apk add --no-cache git openssh-client
-
-ADD gui/env-cmdrc /app/.env-cmdrc
-
-ENV NODE_ENV=production
-ENV PUBLIC_URL=http://localhost:8080
-ENV API_BASE=http://localhost:8081
-ENV API_AUTH=http://localhost:8082
-ENV BASE_REALURL=http://localhost:8080
-# replace [[PUBLIC_URL]] [[API_BASE]] [[API_AUTH]] [[BASE_REALURL]]
-
-RUN sed -i 's/\[\[PUBLIC_URL\]\]/${PUBLIC_URL}/g' .env-cmdrc
-RUN sed -i 's/\[\[API_BASE\]\]/${API_BASE}/g' .env-cmdrc
-RUN sed -i 's/\[\[API_AUTH\]\]/${API_AUTH}/g' .env-cmdrc
-RUN sed -i 's/\[\[BASE_REALURL\]\]/${BASE_REALURL}/g' .env-cmdrc
-
-RUN mkdir -p ~/.ssh && ssh-keyscan github.com >> ~/.ssh/known_hosts
-
-RUN --mount=type=ssh git clone git@github.com:smartango/gatearwayman-gui.git
-WORKDIR /app/gatearwayman-gui
-# RUN cp ../.env-cmdrc 
-RUN npm install --legacy-peer-deps -D
-RUN pwd
-RUN ls -la .
-RUN npm run build
-RUN ls -la .
-RUN pwd
-
 FROM rust:1.96.1 AS rust-build
 
-COPY --from=react-build /app/gatearwayman-gui/build /assets
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates tar && rm -rf /var/lib/apt/lists/*
+RUN mkdir -p /assets
+RUN --mount=type=secret,id=github_token \
+		curl -fsSL \
+			-H "Authorization: Bearer $(cat /run/secrets/github_token)" \
+			-H "Accept: application/octet-stream" \
+			"https://github.com/smartango/gatearwayman-gui/releases/download/v1.0.1/gatearwayman-gui-v1.0.1.tar.gz" \
+		| tar -xz -C /assets
 
 WORKDIR /app
 
