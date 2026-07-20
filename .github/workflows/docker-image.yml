@@ -9,6 +9,9 @@ on:
 jobs:
 
   build:
+    permissions:
+      contents: read
+      packages: write
 
     runs-on: ubuntu-latest
 
@@ -19,19 +22,29 @@ jobs:
         ssh-private-key: ${{ secrets.ECDSA_PRIV_FOR_GUI }}
     - uses: actions/checkout@v4
     - name: Compute image tag
-      run: echo "IMAGE_TAG=$(./scripts/extract-img-tag.sh)" >> "$GITHUB_ENV"
+      id: image_tag
+      run: |
+        IMAGE_TAG=$(./scripts/extract-img-tag.sh)
+        echo "IMAGE_TAG=$IMAGE_TAG" >> "$GITHUB_ENV"
+        echo "tag=$IMAGE_TAG" >> "$GITHUB_OUTPUT"
     - name: Build the Docker image
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         export DOCKER_BUILDKIT=1
         docker build --secret id=github_token,env=GITHUB_TOKEN --ssh default . --file Dockerfile --tag gatearwayman:$IMAGE_TAG
+    - name: Log in to GitHub Container Registry
+      uses: docker/login-action@v3
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
     - name: push the docker image in github registry
-      uses: docker/build-push-action@v5
+      uses: docker/build-push-action@v6
       with:
         context: .
         push: ${{ github.event_name != 'pull_request' }}
         secrets: |
           github_token=${{ secrets.GITHUB_TOKEN }}
         ssh: default
-        tags: ghcr.io/gatearwayman/gatearwayman:${{ env.IMAGE_TAG }}
+        tags: ghcr.io/${{ github.repository_owner }}/gatearwayman:${{ steps.image_tag.outputs.tag }}
