@@ -29,10 +29,10 @@ jobs:
         echo "tag=$IMAGE_TAG" >> "$GITHUB_OUTPUT"
     - name: Build the Docker image
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GUI_RELEASE_TOKEN: ${{ secrets.GUI_RELEASE_TOKEN }}
       run: |
         export DOCKER_BUILDKIT=1
-        docker build --secret id=github_token,env=GITHUB_TOKEN --ssh default . --file Dockerfile --tag gatearwayman:$IMAGE_TAG
+        docker build --secret id=github_token,env=GUI_RELEASE_TOKEN --ssh default . --file Dockerfile --tag gatearwayman:$IMAGE_TAG
     - name: Log in to GitHub Container Registry
       uses: docker/login-action@v3
       with:
@@ -45,6 +45,6 @@ jobs:
         context: .
         push: ${{ github.event_name != 'pull_request' }}
         secrets: |
-          github_token=${{ secrets.GITHUB_TOKEN }}
+          github_token=${{ secrets.GUI_RELEASE_TOKEN }}
         ssh: default
         tags: ghcr.io/${{ github.repository_owner }}/gatearwayman:${{ steps.image_tag.outputs.tag }}
