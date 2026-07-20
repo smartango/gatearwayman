@@ -13,6 +13,21 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - name: Setup SSH Agent
+      uses: webfactory/ssh-agent@v0.10.0
+      with:
+        ssh-private-key: ${{ secrets.ECDSA_PRIV_FOR_GUI }}
     - uses: actions/checkout@v4
+    - name: Compute image tag
+      run: echo "IMAGE_TAG=$(./scripts/extract-img-tag.sh)" >> "$GITHUB_ENV"
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
+      run: |
+        export DOCKER_BUILDKIT=1
+        docker build --ssh default . --file Dockerfile --tag gatearwayman:$IMAGE_TAG
+    - name: push the docker image in github registry
+      uses: docker/build-push-action@v5
+      with:
+        context: .
+        push: ${{ github.event_name != 'pull_request' }}
+        ssh: default
+        tags: ghcr.io/gatearwayman/gatearwayman:${{ env.IMAGE_TAG }}
