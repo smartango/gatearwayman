@@ -1,7 +1,8 @@
 FROM rust:1.96.1 AS rust-build
 
 ## https://github.com/smartango/gatearwayman-gui/releases/download/v1.0.1/gatearwayman-gui-v1.0.1.tar.gz
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates tar jq && rm -rf /var/lib/apt/lists/*
+RUN rustup target add x86_64-unknown-linux-musl && \
+    apt-get update && apt-get install -y --no-install-recommends musl-tools musl-dev curl ca-certificates tar jq 
 RUN mkdir -p /assets
 RUN --mount=type=secret,id=github_token \
 		set -eu; \
@@ -31,7 +32,7 @@ WORKDIR /app
 
 ADD . /app
 
-RUN ASSETS=/assets cargo build --release
+RUN ASSETS=/assets cargo build --release --target x86_64-unknown-linux-musl
 
 
 FROM scratch
