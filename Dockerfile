@@ -39,6 +39,6 @@ RUN ASSETS=/assets cargo build --release --target x86_64-unknown-linux-musl
 
 FROM scratch
 
-COPY --from=rust-build /app/target/release/apimanager-service /apimanager-service
+COPY --from=rust-build /app/target/x86_64-unknown-linux-musl/release/apimanager-service /apimanager-service
 
 ENTRYPOINT ["/apimanager-service"]
