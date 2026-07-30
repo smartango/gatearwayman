@@ -2,7 +2,9 @@ FROM rust:1.96.1 AS rust-build
 
 ## https://github.com/smartango/gatearwayman-gui/releases/download/v1.0.1/gatearwayman-gui-v1.0.1.tar.gz
 RUN rustup target add x86_64-unknown-linux-musl && \
-    apt-get update && apt-get install -y --no-install-recommends musl-tools musl-dev curl ca-certificates tar jq 
+    apt-get update && apt-get install -y --no-install-recommends musl-tools musl-dev curl ca-certificates tar jq \
+	pkg-config \
+    libssl-dev
 RUN mkdir -p /assets
 RUN --mount=type=secret,id=github_token \
 		set -eu; \
