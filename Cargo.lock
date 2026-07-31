@@ -88,6 +88,7 @@ dependencies = [
  "mime_guess",
  "phf",
  "phf_codegen",
+ "regex",
  "reqwest",
  "tokio",
  "tower-http",
