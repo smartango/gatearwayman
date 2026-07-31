@@ -2,6 +2,10 @@
 
 Serving API Gateway manager administrative pages
 
+## Feature list
+
+- Use BASE_HREF=[baseurl] for serving: use at runtime (starttime)
+
 ## Building process
 
 The package is built by multi-stage Dockerfile (https://docs.docker.com/build/building/multi-stage/)

@@ -21,6 +21,8 @@ jobs:
       with:
         ssh-private-key: ${{ secrets.ECDSA_PRIV_FOR_GUI }}
     - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
     - name: Compute image tag
       id: image_tag
       run: |
