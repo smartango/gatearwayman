@@ -4,6 +4,11 @@ use dotenv;
 // a service listening http on port 8080
 // using axum
 use axum::{extract::{Path,State}, routing::get, Router};
+use axum::http::Request;
+use tower_http::trace::TraceLayer;
+use tracing::info;
+use tracing::Span;
+use tracing_subscriber::EnvFilter;
 
 use apimanager_service::static_routes::static_routes;
 
@@ -41,6 +46,13 @@ async fn get_servname_handler(State(state): State<Appstate>, Path(name): Path<St
 
 #[tokio::main]
 async fn main() {
+    tracing_subscriber::fmt()
+        .with_env_filter(
+            EnvFilter::try_from_default_env()
+                .unwrap_or_else(|_| "apimanager_service=info,tower_http=info".into()),
+        )
+        .init();
+
     let _ = dotenv::dotenv();
     let static_pages = static_routes();
     
@@ -57,13 +69,18 @@ async fn main() {
  
     let app = Router::new()
     .merge(static_pages)
-    .merge(app_routes);
+    .merge(app_routes)
+    .layer(
+        TraceLayer::new_for_http()
+            .on_request(|request: &Request<_>, _span: &Span| {
+                info!(method = %request.method(), uri = %request.uri(), "incoming request");
+            }),
+    );
     // run it
     let port: u16 = env::var("PORT").unwrap_or_else(|_| "3000".to_string()).parse().unwrap();
 
     let addr = format!("0.0.0.0:{}", port);
     let listener = tokio::net::TcpListener::bind(&addr).await.unwrap();
-    println!("listening on {}", listener.local_addr().unwrap());
+    info!("listening on {}", listener.local_addr().unwrap());
     axum::serve(listener, app).await.unwrap();
-    println!("Hello, world!");
 }
