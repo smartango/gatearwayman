@@ -9,8 +9,8 @@ RUN mkdir -p /assets
 RUN --mount=type=secret,id=github_token \
 		set -eu; \
 		token="$(cat /run/secrets/github_token)"; \
-		release_tag="v1.0.2"; \
-		asset_name="gatearwayman-gui-v1.0.2.tar.gz"; \
+		release_tag="v1.0.3"; \
+		asset_name="gatearwayman-gui-v1.0.3.tar.gz"; \
 		release_api_url="https://api.github.com/repos/smartango/gatearwayman-gui/releases/tags/${release_tag}"; \
 		asset_api_url="$(curl --fail --show-error --location \
 			-H "Authorization: Bearer ${token}" \
