@@ -19,9 +19,14 @@ axum = { version="0.8.1"}
 tower-http = { version = "0.6", features = ["trace"] }
 tracing = "0.1"
 tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+serde = { version = "1", features = ["derive"] }
+jsonwebtoken = "9"
+rand = "0.8"
 # Sostituisci il TLS nativo con rustls
 reqwest = { version = "0.12.28", default-features = false, features = ["rustls-tls-native-roots", "json"] }
 regex = "1.13.1"
+rsa= { version = "0.9", features = ["pem"]}
+jwt = { version = "0.16.0" }
 
 dotenv = "0.15"
 phf = { version = "0.12.1", default-features = false }
